@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href='/static/bootstrap/css/bootstrap.css'>
+    <script src="/static/js/jquery-1.12.4.min.js"></script>
+    <style>
+    .ordering{
+        background-color: #002a80;
+        color: white;
+    }
+    .my_ordering{
+        background-color: #4cae4c;
+        color: white;
+    }
+     .check{
+         background-color: lightskyblue;
+     }
+    </style>
+</head>
+<body>
+
+<h3>会议室预定</h3>
+<table class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>会议室/时间</th>
+        {% for i in time_list %}
+            <th>{{ i.1 }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {{ htmls|safe }}
+    </tbody>
+</table>
+
+<button class="btn btn-success pull-right save">保存</button>
+<script>
+    var post_data={
+        "ADD":{},
+        "DEL":{},
+    }
+    $(".item").on("click",function () {
+        var room_id  = $(this).attr('room_id');
+        var  time_id  = $(this).attr('time_id');
+        {#alert(room_id)#}
+        {#alert(time_id)#}
+
+        // 取消自己的预订
+        if ($(this).hasClass('my_ordering')){
+
+            $(this).removeClass('my_ordering').empty()
+
+            if (post_data.DEL[room_id]){
+                post_data.DEL[room_id].push(time_id)
+            }
+            else
+            post_data.DEL[room_id] = [time_id,]
+
+
+        }else if($(this).hasClass("check")){ //
+            $(this).removeClass('check');
+            // 取消预订
+             post_data.ADD[room_id].pop(time_id)
+        }
+        else if ($(this).hasClass('ordering')){
+            alert('不允许取消他人的预订')
+        }
+        else {
+            $(this).addClass('check')
+            if (post_data.ADD[room_id]){
+
+                post_data.ADD[room_id].push(time_id)
+            }
+            else
+            post_data.ADD[room_id] = [time_id,]
+        }
+
+    })
+    $(".save").on('click',function () {
+        $.ajax({
+            url:"/book/",
+
+
+
+
+
+        })
+
+    })
+</script>
+</body>
+</html>
